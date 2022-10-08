@@ -16,10 +16,11 @@ jobs:
           url: 'http://68.183.76.99:8080'
           key: '${{ secrets.SECRET_OWASP_DT_KEY }}'
           language: 'php'
-      - name: "Read file contents"
-        uses: andstor/file-reader-action@v1
-        with:
-          path: "/github/workspace/bom.xml"
+      - name: Print bom
+        shell: bash
+        run: |
+          value=`cat /github/workspace/bom.xml`
+          echo The result is $value
       - name: Get the output time
         run: echo "The risk score of the project is ${{ steps.riskscoreFromDT.outputs.riskscore }}"
 
