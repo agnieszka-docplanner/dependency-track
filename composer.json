@@ -2,7 +2,7 @@
   "name": "test/test",
   "description": "test",
   "require": {
-    "php": "^7.4",
-    "cache/adapter-bundle": "1.0.0"
+    "php": "5.3",
+    "psr/log": "1.0.2"
   }
 }
