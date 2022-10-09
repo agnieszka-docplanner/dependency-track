@@ -3,6 +3,6 @@
   "description": "test",
   "require": {
     "php": "^7.4",
-    "cache/adapter-bundle": "1.0.0",
+    "cache/adapter-bundle": "1.0.0"
   }
 }
