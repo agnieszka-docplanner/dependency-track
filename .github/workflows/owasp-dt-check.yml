@@ -15,10 +15,5 @@ jobs:
         run: |
           curl -X "POST" "http://68.183.76.99:8081/api/v1/bom" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
-            -F "project=6accf73b-a957-4e1c-9e2a-5d694bbbab63" \
+            -F "project=428549e2-6e63-40b5-b84e-3ecebfa865fd" \
             -F "bom=@bom.json"
-      - name: Print bom
-        shell: bash
-        run: |
-          value=`cat bom.json`
-          echo The result is $value
