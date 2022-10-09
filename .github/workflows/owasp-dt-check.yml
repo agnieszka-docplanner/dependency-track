@@ -19,7 +19,7 @@ jobs:
         if: success() || failure()
         shell: bash
         run: |
-          value=`cat /github/workspace/bom.xml`
+          value=`cat bom.xml`
           echo The result is $value
       - name: Get the output time
         run: echo "The risk score of the project is ${{ steps.riskscoreFromDT.outputs.riskscore }}"
