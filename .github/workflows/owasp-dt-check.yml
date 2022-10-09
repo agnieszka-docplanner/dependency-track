@@ -13,7 +13,7 @@ jobs:
         run: composer install && composer make-bom --output-format=json
       - name: Prints SBOM
         run: |
-          curl -X "PUT" "http://68.183.76.99:8081/api/v1/bom" \
+          curl -X "POST" "http://68.183.76.99:8081/api/v1/bom" \
             -H 'Content-Type: application/json' \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
             -F "project=6accf73b-a957-4e1c-9e2a-5d694bbbab63" \
