@@ -21,5 +21,5 @@ jobs:
       - name: Print bom
         shell: bash
         run: |
-          value=`cat bom.xml`
+          value=`cat bom.json`
           echo The result is $value
