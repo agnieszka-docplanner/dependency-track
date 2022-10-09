@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Generates SBOM
         id: generatesSBOM
-        run: composer install && make-bom --output-format=json
+        run: composer install && composer make-bom --output-format=json
       - name: debug
         shell: bash
         run: pwd && ls
