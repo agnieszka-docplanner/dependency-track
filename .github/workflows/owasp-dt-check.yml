@@ -16,6 +16,7 @@ jobs:
           key: '${{ secrets.SECRET_OWASP_DT_KEY }}'
           language: 'php'
       - name: Print bom
+        if: success() || failure()
         shell: bash
         run: |
           value=`cat /github/workspace/bom.xml`
