@@ -1,6 +1,8 @@
 name: CI
 
-on: [push, pull_request]
+on:
+    pull_request:
+        types: [opened]
 
 jobs:
   build:
@@ -17,3 +19,17 @@ jobs:
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
             -F "project=172a294c-a014-4c9d-afe8-27dc12be533e" \
             -F "bom=@bom.json"
+      - name: Fetch results
+        run: |
+          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/172a294c-a014-4c9d-afe8-27dc12be533e/current" \
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics.json
+      - name: Check for vulns
+        id: check
+        run: |
+          echo "CRITICAL=$(cat metrics.json | jq '.critical')" >> $GITHUB_OUTPUT
+      - name: Put a comment
+        uses: thollander/actions-comment-pull-request@v1
+        if: steps.check.outputs.CRITICAL > 0
+        with:
+          message: |-
+            You have critical issues in your dependencies
