@@ -16,7 +16,7 @@ jobs:
         run: mv composer.json composer.json.back && mv composer.lock composer.lock.back
       - name: Install Cyclonedx
         id: installsCyclonedx
-        run: composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
+        run: composer config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
       - name: Rename composer back
         id: rename-composer-back
         run: mv composer.json.back composer.json && mv composer.lock.back composer.lock
