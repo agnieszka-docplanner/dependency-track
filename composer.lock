@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "10cca1218dd8f6191155902303a40b23",
+    "content-hash": "b3be1f12c9df51b7317b22f01a94ed30",
     "packages": [
         {
             "name": "cyclonedx/cyclonedx-library",
