@@ -34,7 +34,7 @@ jobs:
         run: composer make-bom --output-format=json
       - name: Debug
         id: debug
-        run: ls -la
+        run: ls -la vendor
       - name: Prints SBOM
         run: |
           curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
