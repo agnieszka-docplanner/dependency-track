@@ -14,24 +14,24 @@ jobs:
       - name: Rename composer
         id: rename-composer
         run: mv composer.json composer.json.back
-      - name: Debug
-        id: debug
-        run: ls
       - name: Rename composer.lock
         id: rename-composer-lock
-        run: mv composer.lock composer.lock.back        
+        run: mv composer.lock composer.lock.copy        
       - name: Create composer
         id: create-composer
         run: echo "{}" > composer.json
+      - name: Debug
+        id: debug
+        run: ls
       - name: Install Cyclonedx
         id: installsCyclonedx
         run: composer config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
       - name: Rename composer back
         id: rename-composer-back
-        run: mv composer.json.back composer.json && mv composer.lock.back composer.lock
+        run: mv composer.json.back composer.json
       - name: Rename composer.lock back
         id: rename-composer-lock-back
-        run: mv composer.lock.back composer.lock
+        run: mv composer.lock.copy composer.lock
       - name: Generate SBOM
         id: generatesSBOM
         run: composer make-bom --output-format=json
