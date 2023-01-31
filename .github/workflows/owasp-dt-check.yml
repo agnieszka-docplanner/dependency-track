@@ -29,12 +29,12 @@ jobs:
       - name: Rename composer.lock back
         id: rename-composer-lock-back
         run: mv composer.lock.copy composer.lock
-      - name: Debug
-        id: debug
-        run: ls && cat composer.json && cat composer.lock
       - name: Generate SBOM
         id: generatesSBOM
         run: composer make-bom --output-format=json
+      - name: Debug
+        id: debug
+        run: ls -la
       - name: Prints SBOM
         run: |
           curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
