@@ -26,12 +26,12 @@ jobs:
       - name: Rename composer back
         id: rename-composer-back
         run: mv composer.json.back composer.json && mv composer.lock.back composer.lock
+      - name: Debug
+        id: debug
+        run: ls
       - name: Rename composer.lock back
         id: rename-composer-lock-back
         run: mv composer.lock.back composer.lock
-      - name: Debug
-        id: debug
-        run: ls && cat composer.json && composer.lock
       - name: Generate SBOM
         id: generatesSBOM
         run: composer make-bom --output-format=json
