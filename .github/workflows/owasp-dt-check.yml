@@ -43,7 +43,7 @@ jobs:
         id: fetch-uuid
         run: |
           echo "RESULTS=$(curl -X GET 'http://159.89.100.172:8081/api/v1/project/lookup?name=$GITHUB_REPOSITORY-php-prod' \
-            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq 'uuid')" >> $GITHUB_OUTPUT
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.uuid')" >> $GITHUB_OUTPUT
       - name: Fetch results from production
         run: |
           curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/${{ steps.fetch-uuid.outputs.RESULTS }}" \
