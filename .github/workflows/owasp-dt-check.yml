@@ -45,7 +45,10 @@ jobs:
       - name: Fetch results from dev
         run: |
           curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/$GITHUB_REPOSITORY-php-dev/current" \
-            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-dev.json      
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-dev.json
+      - name: Debug
+        id: debug
+        run: cat metrics-dev.json
       - name: Check for vulnerabilities on production
         id: check-production
         run: |
