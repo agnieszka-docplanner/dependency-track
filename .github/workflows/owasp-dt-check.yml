@@ -47,6 +47,7 @@ jobs:
         id: check-dev
         run: |
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
       - name: Add commit comment
         run: |
           jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. \
