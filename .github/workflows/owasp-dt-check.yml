@@ -1,4 +1,4 @@
-name: CI
+name: Dependency-Track-Dev
 
 on:
   pull_request:
