@@ -3,7 +3,7 @@ name: Dependency-Track-Prod
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'composer.lock'
 
