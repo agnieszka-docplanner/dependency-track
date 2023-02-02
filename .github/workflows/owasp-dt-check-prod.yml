@@ -1,0 +1,42 @@
+name: Dependency-Track-Prod
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'composer.lock'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v2
+      # Rename composer files to avoid downloading everything
+      - name: Rename composer files
+        id: rename-composer
+        run: mv composer.json composer.json.copy && mv composer.lock composer.lock.copy
+      # Create empty composer file with valid json
+      - name: Create composer
+        id: create-composer
+        run: echo "{}" > composer.json
+      # Add cyclonedx plugin and install it
+      - name: Install Cyclonedx
+        id: installsCyclonedx
+        run: composer config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
+      # Rename composer files back to perform analysis
+      - name: Rename composer back
+        id: rename-composer-back
+        run: mv composer.json.copy composer.json && mv composer.lock.copy composer.lock
+      - name: Generate SBOM
+        id: generatesSBOM
+        run: composer make-bom --output-format=json
+      # Send SBOM to dev project
+      - name: Prints SBOM
+        run: |
+          curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
+            -F "projectName=$GITHUB_REPOSITORY-php-prod" \
+            -F "autoCreate=true" \
+            -F "bom=@bom.json"
