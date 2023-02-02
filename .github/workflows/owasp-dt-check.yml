@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "RESULTS=$(cat metrics-dev.json | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
       - name: Debug
-        run: cat metrics-dev.json && metrics-prod.json
+        run: cat metrics-dev.json && cat metrics-prod.json
       - name: Put a comment
         uses: thollander/actions-comment-pull-request@v1
         if: steps.check-dev.outputs.RESULTS > steps.check-prod.outputs.RESULTS
