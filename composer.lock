@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3be1f12c9df51b7317b22f01a94ed30",
+    "content-hash": "28129a7410412560a86869d55b9b34aa",
     "packages": [
         {
             "name": "cyclonedx/cyclonedx-library",
@@ -314,16 +314,16 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v4.2.0",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "97aeb14c6fc2fb733938809926e2f9d6c581a70d"
+                "reference": "9e0536de18b53ba193364291ef0303b0ab9903e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/97aeb14c6fc2fb733938809926e2f9d6c581a70d",
-                "reference": "97aeb14c6fc2fb733938809926e2f9d6c581a70d",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/9e0536de18b53ba193364291ef0303b0ab9903e1",
+                "reference": "9e0536de18b53ba193364291ef0303b0ab9903e1",
                 "shasum": ""
             },
             "require": {
@@ -374,9 +374,9 @@
             "support": {
                 "forum": "https://github.com/smarty-php/smarty/discussions",
                 "issues": "https://github.com/smarty-php/smarty/issues",
-                "source": "https://github.com/smarty-php/smarty/tree/v4.2.0"
+                "source": "https://github.com/smarty-php/smarty/tree/v4.1.0"
             },
-            "time": "2022-08-01T21:57:38+00:00"
+            "time": "2022-02-06T20:34:27+00:00"
         },
         {
             "name": "swaggest/json-diff",
