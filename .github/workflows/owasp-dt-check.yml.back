@@ -11,41 +11,32 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
-      # Rename composer files to avoid downloading everything
-      - name: Rename composer files
+      - name: Rename composer
         id: rename-composer
-        run: mv composer.json composer.json.copy && mv composer.lock composer.lock.copy
-      # Create empty composer file with valid json
-      - name: Create composer
-        id: create-composer
-        run: echo "{}" > composer.json
-      # Add cyclonedx plugin and install it
+        run: mv composer.json composer.json.back && mv composer.lock composer.lock.back
       - name: Install Cyclonedx
         id: installsCyclonedx
         run: composer config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
-      # Rename composer files back to perform analysis
       - name: Rename composer back
         id: rename-composer-back
-        run: mv composer.json.copy composer.json && mv composer.lock.copy composer.lock
+        run: mv composer.json.back composer.json && mv composer.lock.back composer.lock
       - name: Generate SBOM
         id: generatesSBOM
         run: composer make-bom --output-format=json
-      # Send SBOM to dev project
       - name: Prints SBOM
         run: |
           curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
-            -F "projectName=$GITHUB_REPOSITORY-php-dev" \
-            -F "autoCreate=true" \
+            -F "project=fa210568-6e59-414b-94f2-e135100125a5" \
             -F "bom=@bom.json"
       - name: Fetch results from production
         run: |
-          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/3750aaa5-b4b5-4d7d-9818-231ce07927d5/current" \
+          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/172a294c-a014-4c9d-afe8-27dc12be533e/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-prod.json
       - name: Fetch results from dev
         run: |
-          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
-            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-dev.json
+          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/fa210568-6e59-414b-94f2-e135100125a5/current" \
+            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-dev.json      
       - name: Check for vulnerabilities on production
         id: check-production
         run: |

@@ -4,11 +4,12 @@
   "require": {
     "php": "^8.0",
     "psr/log": "1.1.3",
-    "cyclonedx/cyclonedx-php-composer": "3.10.2"
+    "cyclonedx/cyclonedx-php-composer": "^3.10",
+    "smarty/smarty": "v4.2.0"
   },
-    "config": {
-        "allow-plugins": {
-            "cyclonedx/cyclonedx-php-composer": true
-        }
+  "config": {
+    "allow-plugins": {
+      "cyclonedx/cyclonedx-php-composer": true
     }
+  }
 }
