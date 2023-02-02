@@ -38,23 +38,14 @@ jobs:
             -F "projectName=$GITHUB_REPOSITORY-php-dev" \
             -F "autoCreate=true" \
             -F "bom=@bom.json"
-      # Fetch uuid -> here you need to change output to be used in next step
-      - name: Fetch uuid
-        id: fetch-uuid
-        run: |
-          echo "RESULTS=$(curl -X GET 'http://159.89.100.172:8081/api/v1/project/lookup?name=$GITHUB_REPOSITORY-php-prod' \
-            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.uuid')" >> $GITHUB_OUTPUT
       - name: Fetch results from production
         run: |
-          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/${{ steps.fetch-uuid.outputs.RESULTS }}" \
+          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/3750aaa5-b4b5-4d7d-9818-231ce07927d5/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-prod.json
       - name: Fetch results from dev
         run: |
-          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/$GITHUB_REPOSITORY-php-dev/current" \
+          curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' -o metrics-dev.json
-      - name: Debug
-        id: debug
-        run: cat metrics-prod.json
       - name: Check for vulnerabilities on production
         id: check-production
         run: |
