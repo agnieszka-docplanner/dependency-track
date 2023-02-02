@@ -1,7 +1,7 @@
 name: Dependency-Track-Dev
 
 on:
-  pull_request:
+  push:
     paths:
       - 'composer.lock'
 
@@ -47,13 +47,12 @@ jobs:
         id: check-dev
         run: |
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
-            -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
-      - name: Put a comment
-        uses: thollander/actions-comment-pull-request@v1
-        if: steps.check-dev.outputs.RESULTS > steps.check-prod.outputs.RESULTS
-        with:
-          message: |-
-            #### You introduced new vulnerabilities
-            It looks like you updated dependencies files and it resulted with adding vulnerable library. 
-            Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622).
-            You can login with AWS SSO. 
+      - name: Add commit comment
+        run: |
+          jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. \
+            Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). \
+            You can login with AWS SSO. "}' | \
+          curl -sL  -X POST -d @- \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/comments"
