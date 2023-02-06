@@ -51,7 +51,7 @@ jobs:
       - name: Add commit comment
         if: steps.check-dev.outputs.RESULTS > steps.check-prod.outputs.RESULTS
         run: |
-          jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
+          echo steps.check-dev.outputs.RESULTS && steps.check-prod.outputs.RESULTS && jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
           curl -sL  -X POST -d @- \
             -H "Content-Type: application/json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
