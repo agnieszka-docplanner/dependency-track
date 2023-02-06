@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'composer.lock'
+      - '.github/workflows/owasp-dt-check.yml'
 
 jobs:
   build:
@@ -39,7 +40,7 @@ jobs:
             -F "autoCreate=true" \
             -F "bom=@bom.json"
       - name: Fetch results from production
-        id: check-production
+        id: check-prod
         run: |
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/3750aaa5-b4b5-4d7d-9818-231ce07927d5/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
@@ -49,9 +50,9 @@ jobs:
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
       - name: Add commit comment
-        if: steps.check-dev.outputs.RESULTS > steps.check-prod.outputs.RESULTS
+        if: steps.check-dev.outputs.RESULTS  > steps.check-prod.outputs.RESULTS
         run: |
-          jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
+          echo ${{ steps.check-dev.outputs.RESULTS }} && echo ${{ steps.check-prod.outputs.RESULTS }} && jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
           curl -sL  -X POST -d @- \
             -H "Content-Type: application/json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
