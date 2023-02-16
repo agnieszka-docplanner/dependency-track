@@ -8,7 +8,7 @@
     "guzzlehttp/guzzle": "v6.5.5",
     "symfony/symfony": "^5.4",
     "laravel/laravel": "^7.30",
-    "smarty/smarty": "v4.2.0"
+    "smarty/smarty": "v3.1.29"
   },
   "config": {
     "allow-plugins": {
