@@ -12,22 +12,10 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v2
-      # Rename composer files to avoid downloading everything
-      - name: Rename composer files
-        id: rename-composer
-        run: mv composer.json composer.json.copy && mv composer.lock composer.lock.copy
-      # Create empty composer file with valid json
-      - name: Create composer
-        id: create-composer
-        run: echo "{}" > composer.json
       # Add cyclonedx plugin and install it
       - name: Install Cyclonedx
         id: installsCyclonedx
-        run: composer config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
-      # Rename composer files back to perform analysis
-      - name: Rename composer back
-        id: rename-composer-back
-        run: mv composer.json.copy composer.json && mv composer.lock.copy composer.lock
+        run: composer global config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true && composer global require --ignore-platform-reqs --dev cyclonedx/cyclonedx-php-composer
       - name: Generate SBOM
         id: generatesSBOM
         run: composer make-bom --output-format=json
@@ -36,8 +24,7 @@ jobs:
         run: |
           curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
-            -F "projectName=$GITHUB_REPOSITORY-php-dev" \
-            -F "autoCreate=true" \
+            -F "project=49ec41a4-8e47-4026-8ad8-b74775d3953a" \
             -F "bom=@bom.json"
       - name: Fetch results from production
         id: check-prod
@@ -49,10 +36,12 @@ jobs:
         run: |
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
+      - name: Debug
+        run: echo ${{ steps.check-dev.outputs.RESULTS }} && echo ${{ steps.check-prod.outputs.RESULTS }}
       - name: Add commit comment
         if: steps.check-dev.outputs.RESULTS  > steps.check-prod.outputs.RESULTS
         run: |
-          echo ${{ steps.check-dev.outputs.RESULTS }} && echo ${{ steps.check-prod.outputs.RESULTS }} && jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
+          jq -nc '{"body": "It looks like you updated dependencies files and it resulted with adding vulnerable library. Please review the dependencies you added. You can see the vulnerabilities details [here](http://159.89.100.172:8080/projects/a8d7eabb-4ea6-4b0b-900a-3e62db2cb622). You can login with AWS SSO. "}' | \
           curl -sL  -X POST -d @- \
             -H "Content-Type: application/json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
