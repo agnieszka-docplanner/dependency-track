@@ -7,7 +7,8 @@
     "cyclonedx/cyclonedx-php-composer": "^3.10",
     "guzzlehttp/guzzle": "v6.5.5",
     "symfony/symfony": "^5.4",
-    "laravel/laravel": "^7.30"
+    "laravel/laravel": "^7.30",
+    "smarty/smarty": "v4.2.0"
   },
   "config": {
     "allow-plugins": {
