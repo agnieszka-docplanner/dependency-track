@@ -21,23 +21,31 @@ jobs:
         run: composer make-bom --output-format=json
       # Send SBOM to dev project
       - name: Prints SBOM
+        id: printsSBOM
         run: |
-          curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
+          echo "RESULTS=$(curl -X "POST" "http://159.89.100.172:8081/api/v1/bom" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' \
-            -F "project=49ec41a4-8e47-4026-8ad8-b74775d3953a" \
-            -F "bom=@bom.json"
+            -F "project=2c0dfba2-335d-4723-8e07-eeef5baa3386" \
+            -F "bom=@bom.json" | jq '.token' | sed 's/\"//g')" >> $GITHUB_OUTPUT
       - name: Fetch results from production
         id: check-prod
         run: |
           echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/3750aaa5-b4b5-4d7d-9818-231ce07927d5/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
+      - name: Check if still processed
+        id: check-processing
+        run: |
+          echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/bom/token/${{ steps.printsSBOM.outputs.RESULTS }}" -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.processing')" >> $GITHUB_OUTPUT
+      - name: Wait for processing
+        if: ${{ steps.check-processing.outputs.RESULTS }} == "true"
+        run: sleep 5s
       - name: Fetch results from dev
         id: check-dev
         run: |
-          echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/49ec41a4-8e47-4026-8ad8-b74775d3953a/current" \
+          echo "RESULTS=$(curl -X "GET" "http://159.89.100.172:8081/api/v1/metrics/project/2c0dfba2-335d-4723-8e07-eeef5baa3386/current" \
             -H 'X-API-Key: ${{ secrets.SECRET_OWASP_DT_KEY }}' | jq '.vulnerabilities')" >> $GITHUB_OUTPUT
       - name: Debug
-        run: echo ${{ steps.check-dev.outputs.RESULTS }} && echo ${{ steps.check-prod.outputs.RESULTS }}
+        run: echo ${{ steps.check-dev.outputs.RESULTS }} && echo ${{ steps.check-prod.outputs.RESULTS }} && echo ${{ steps.check-processing.outputs.RESULTS }}
       - name: Add commit comment
         if: steps.check-dev.outputs.RESULTS  > steps.check-prod.outputs.RESULTS
         run: |
