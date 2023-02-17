@@ -4,11 +4,11 @@
   "require": {
     "php": "^7.1",
     "psr/log": "1.1.3",
-    "cyclonedx/cyclonedx-php-composer": "^3.10",
     "guzzlehttp/guzzle": "v6.5.5",
     "symfony/symfony": "^5.4",
     "laravel/laravel": "^7.30",
-    "smarty/smarty": "v3.1.29"
+    "smarty/smarty": "v3.1.29",
+    "twig/twig": "v3.4.1"
   },
   "config": {
     "allow-plugins": {
